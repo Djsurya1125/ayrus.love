@@ -178,9 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   enterButton.addEventListener('click', () => {
-    // Start background music on this user gesture
-    startAmbientMusic();
-
     // Fade out hero
     heroSection.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
     heroSection.style.opacity = '0';
@@ -252,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
      Yes → success overlay + confetti
   ------------------------------------------------- */
   yesButton.addEventListener('click', () => {
+    startAmbientMusic();
     successOverlay.classList.remove('hidden');
     launchConfettiBurst();
   });
