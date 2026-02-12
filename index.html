@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You</title>
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Elegant serif + clean sans-serif -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============================================
+       GOLD PARTICLE CANVAS (ambient background)
+  ============================================= -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Vignette overlay for cinematic depth -->
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- ============================================
+       SECTION 1 — CINEMATIC LANDING
+  ============================================= -->
+  <section id="landing" class="section landing">
+    <div class="landing__content">
+      <div class="landing__ornament reveal" aria-hidden="true">✦</div>
+      <h1 class="landing__title reveal reveal--d1">
+        For the most important<br />person in my life
+      </h1>
+      <p class="landing__subtitle reveal reveal--d2">
+        I made something just for you.
+      </p>
+      <button id="btn-enter" class="btn btn--gold reveal reveal--d3">
+        Enter
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 2 — PROPOSAL STORY
+  ============================================= -->
+  <section id="story" class="section story hidden">
+    <div class="story__content">
+
+      <!-- Each line fades in sequentially via JS -->
+      <p class="story__line" data-index="0">I remember the first time I saw you.</p>
+      <p class="story__line" data-index="1">Something shifted in me that day —</p>
+      <p class="story__line" data-index="2">quietly, irreversibly.</p>
+
+      <div class="story__spacer"></div>
+
+      <p class="story__line" data-index="3">You turned ordinary moments</p>
+      <p class="story__line" data-index="4">into memories I never want to lose.</p>
+
+      <div class="story__spacer"></div>
+
+      <p class="story__line" data-index="5">Late-night conversations that felt like minutes.</p>
+      <p class="story__line" data-index="6">Comfortable silences that felt like home.</p>
+
+      <div class="story__spacer"></div>
+
+      <p class="story__line" data-index="7">And now, I have one question.</p>
+
+      <!-- The big question -->
+      <h2 id="big-question" class="story__question hidden">
+        Will you build a lifetime with me?
+      </h2>
+
+      <!-- Proposal buttons -->
+      <div id="proposal-buttons" class="story__buttons hidden">
+        <button id="btn-yes" class="btn btn--gold btn--lg">Yes</button>
+        <button id="btn-no" class="btn btn--ghost">No</button>
+      </div>
+
+      <!-- Disabled after failed "No" attempts -->
+      <p id="no-expired" class="story__expired hidden">
+        That option is no longer available.
+      </p>
+    </div>
+
+    <!-- ---- Success Overlay ---- -->
+    <div id="success-overlay" class="overlay hidden">
+      <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+      <div class="overlay__inner">
+        <div class="overlay__ornament">✦</div>
+        <h2 class="overlay__title">You just made me the happiest person alive.</h2>
+        <p class="overlay__sub">I promise to spend every day earning this yes.</p>
+        <button id="btn-gifts" class="btn btn--gold">Your Gifts Await</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 3 — GIFT EXPERIENCE
+  ============================================= -->
+  <section id="gifts" class="section gifts hidden">
+    <h2 class="gifts__heading reveal">A few things for you</h2>
+    <div class="gifts__divider reveal" aria-hidden="true"></div>
+
+    <div class="gifts__grid">
+
+      <!-- Gift 1 — Music -->
+      <article class="gift-card reveal" data-modal="modal-music">
+        <span class="gift-card__icon">♫</span>
+        <h3 class="gift-card__title">Music Experience</h3>
+        <p class="gift-card__desc">Songs that make me think of us.</p>
+        <span class="gift-card__cta">Listen →</span>
+      </article>
+
+      <!-- Gift 2 — Letter -->
+      <article class="gift-card reveal" data-modal="modal-letter">
+        <span class="gift-card__icon">✉</span>
+        <h3 class="gift-card__title">A Letter</h3>
+        <p class="gift-card__desc">Words I have been keeping for you.</p>
+        <span class="gift-card__cta">Read →</span>
+      </article>
+
+      <!-- Gift 3 — Memories -->
+      <article class="gift-card reveal" data-modal="modal-memories">
+        <span class="gift-card__icon">❏</span>
+        <h3 class="gift-card__title">Our Memories</h3>
+        <p class="gift-card__desc">Moments I never want to forget.</p>
+        <span class="gift-card__cta">View →</span>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================================
+       MODAL — Music Experience (YouTube Embeds)
+  ============================================= -->
+  <div id="modal-music" class="modal hidden" role="dialog" aria-label="Music Experience">
+    <div class="modal__backdrop"></div>
+    <div class="modal__body">
+      <button class="modal__close" aria-label="Close">&times;</button>
+      <h3 class="modal__heading">♫&ensp;Our Soundtrack</h3>
+
+      <div class="yt-player">
+        <p class="yt-player__label">Song 1 — Title Here</p>
+        <!-- Replace VIDEO_ID_1 with your actual YouTube video ID
+             Example: https://youtu.be/dQw4w9WgXcQ → VIDEO_ID = dQw4w9WgXcQ -->
+        <div class="yt-player__frame">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_1"
+            title="Song 1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="yt-player">
+        <p class="yt-player__label">Song 2 — Title Here</p>
+        <!-- Replace VIDEO_ID_2 -->
+        <div class="yt-player__frame">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_2"
+            title="Song 2"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="yt-player">
+        <p class="yt-player__label">Song 3 — Title Here</p>
+        <!-- Replace VIDEO_ID_3 -->
+        <div class="yt-player__frame">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_3"
+            title="Song 3"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       MODAL — Personal Letter
+  ============================================= -->
+  <div id="modal-letter" class="modal hidden" role="dialog" aria-label="Personal Letter">
+    <div class="modal__backdrop"></div>
+    <div class="modal__body modal__body--letter">
+      <button class="modal__close modal__close--dark" aria-label="Close">&times;</button>
+      <div class="letter">
+        <p class="letter__date">12 February 2026</p>
+        <p class="letter__greeting">My Love,</p>
+        <div class="letter__text">
+          <p>
+            I am not sure exactly when it happened — maybe it was the way you
+            laugh at your own jokes before you even finish telling them, or how
+            you always steal the blanket and deny it with a straight face.
+          </p>
+          <p>
+            But somewhere between all the late-night conversations and the
+            comfortable silences, I realised you are my favourite everything.
+            My favourite hello. My favourite goodbye. My favourite
+            "what do you want to eat?" argument.
+          </p>
+          <p>
+            You make the ordinary feel extraordinary, and I never want to stop
+            building this beautiful, messy, wonderful life with you.
+          </p>
+          <p>
+            So here is my promise: I will keep choosing you — today, tomorrow,
+            and every single day that follows.
+          </p>
+        </div>
+        <p class="letter__closing">Forever yours,</p>
+        <p class="letter__signature">DJ</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       MODAL — Memories Gallery
+  ============================================= -->
+  <div id="modal-memories" class="modal hidden" role="dialog" aria-label="Our Memories">
+    <div class="modal__backdrop"></div>
+    <div class="modal__body modal__body--gallery">
+      <button class="modal__close" aria-label="Close">&times;</button>
+      <h3 class="modal__heading">Our Memories</h3>
+
+      <div class="gallery">
+        <!-- Replace image src with your real pictures later -->
+        <img src="photos/photo1.jpg" alt="Our Memory" class="gallery__img" loading="lazy" />
+        <img src="photos/photo2.jpg" alt="Our Memory" class="gallery__img" loading="lazy" />
+        <img src="photos/photo3.jpg" alt="Our Memory" class="gallery__img" loading="lazy" />
+        <img src="photos/photo4.jpg" alt="Our Memory" class="gallery__img" loading="lazy" />
+        <img src="photos/photo5.jpg" alt="Our Memory" class="gallery__img" loading="lazy" />
+        <img src="photos/photo6.jpg" alt="Our Memory" class="gallery__img" loading="lazy" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       LIGHTBOX
+  ============================================= -->
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-label="Full image">
+    <button class="lightbox__close" aria-label="Close">&times;</button>
+    <img class="lightbox__img" src="" alt="Full-size memory" />
+  </div>
+
+  <!-- ============================================
+       AMBIENT MUSIC TOGGLE (muted by default)
+  ============================================= -->
+  <button id="btn-music" class="music-toggle" aria-label="Toggle ambient music">
+    <span id="music-icon">♪</span>
+  </button>
+  <!-- Replace src with your ambient instrumental track -->
+  <audio id="bg-music" loop preload="none">
+    <source src="songs/ambient.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
