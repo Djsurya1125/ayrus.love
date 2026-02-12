@@ -18,25 +18,25 @@
 
   <header id="hero" class="hero section">
     <div class="hero__overlay" aria-hidden="true"></div>
-    <div class="hero__content reveal-on-scroll">
-      <p class="hero__eyebrow">A Love Written in Light</p>
+    <div class="hero__content">
+      <p class="hero__eyebrow typing-text" data-typing data-typing-speed="38">A Love Written in Light</p>
       <h1 class="hero__title typing-text" data-typing data-typing-speed="52">For the most beautiful part of my life</h1>
-      <p class="hero__subtitle typing-text" data-typing data-typing-speed="28" data-typing-delay="260">Every heartbeat led me to this moment.</p>
-      <button id="enter-heart" class="btn btn--gold" type="button">Enter My Heart</button>
+      <p class="hero__subtitle typing-text" data-typing data-typing-speed="28">Every heartbeat led me to this moment.</p>
+      <button id="enter-heart" class="btn btn--gold hero__enter-btn" type="button">Enter My Heart</button>
     </div>
   </header>
 
   <main>
     <section id="story" class="story section hidden" aria-label="Story and Proposal">
       <div class="story__container">
-        <p class="story__line reveal-on-scroll">You arrived gently, like a sunrise over a quiet sea.</p>
-        <p class="story__line reveal-on-scroll">The world became softer, warmer, and infinitely more beautiful.</p>
-        <p class="story__line reveal-on-scroll">You turned every ordinary second into a memory worth forever.</p>
-        <p class="story__line reveal-on-scroll">And now, with all my heart, there is one promise I long to keep.</p>
+        <p class="story__line" data-story-line>You arrived gently, like a sunrise over a quiet sea.</p>
+        <p class="story__line" data-story-line>The world became softer, warmer, and infinitely more beautiful.</p>
+        <p class="story__line" data-story-line>You turned every ordinary second into a memory worth forever.</p>
+        <p class="story__line" data-story-line>And now, with all my heart, there is one promise I long to keep.</p>
 
-        <h2 class="story__question reveal-on-scroll">Will you be mine forever?</h2>
+        <h2 class="story__question" id="story-question">Will you be mine forever?</h2>
 
-        <div class="proposal-actions reveal-on-scroll" id="proposal-actions">
+        <div class="proposal-actions" id="proposal-actions">
           <button id="yes-btn" class="btn btn--yes" type="button">Yes 💖</button>
           <button id="no-btn" class="btn btn--no" type="button">No 🙈</button>
         </div>
@@ -196,7 +196,7 @@
   </div>
 
   <button id="ambient-toggle" class="ambient-toggle" type="button" aria-label="Toggle ambient music">♫</button>
-  <audio id="ambient-music" loop muted preload="none">
+  <audio id="ambient-music" loop preload="auto">
     <source src="songs/ambient.mp3" type="audio/mpeg" />
   </audio>
 

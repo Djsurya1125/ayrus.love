@@ -183,6 +183,13 @@ audio {
 
 .typing-text {
   display: inline-block;
+  min-height: 1.2em;
+  visibility: hidden;
+}
+
+.typing-text.is-typing,
+.typing-text.is-typed {
+  visibility: visible;
 }
 
 .typing-text.is-typing::after {
@@ -200,6 +207,20 @@ audio {
   50% {
     opacity: 0;
   }
+}
+
+/* Hero enter button: hidden until hero typing finishes */
+.hero__enter-btn {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.hero__enter-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* =============================================
@@ -284,6 +305,24 @@ audio {
   margin: 0.35rem auto;
   color: rgba(255, 250, 247, 0.97);
   text-shadow: 0 4px 16px rgba(126, 59, 89, 0.18);
+  min-height: 1.2em;
+  visibility: hidden;
+}
+
+.story__line.is-typing,
+.story__line.is-typed {
+  visibility: visible;
+}
+
+.story__line.is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 0.12em;
+  vertical-align: -0.08em;
+  background: rgba(255, 249, 245, 0.92);
+  animation: typingCaret 0.7s steps(1, end) infinite;
 }
 
 .story__question {
@@ -294,6 +333,14 @@ audio {
   font-size: clamp(1.44rem, 7.2vw, 3.3rem);
   color: #fff8e7;
   text-shadow: 0 0 18px rgba(212, 175, 55, 0.55), 0 0 35px rgba(236, 178, 95, 0.34);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.story__question.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .proposal-actions {
@@ -305,6 +352,14 @@ audio {
   justify-content: center;
   align-items: center;
   gap: 0.8rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.proposal-actions.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .destiny-note {
