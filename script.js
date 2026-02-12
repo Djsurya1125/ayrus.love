@@ -211,14 +211,38 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const rect = proposalActions.getBoundingClientRect();
-    const maxX = Math.max(0, rect.width - noButton.offsetWidth);
-    const maxY = Math.max(0, rect.height - noButton.offsetHeight);
+    // Shrink the button progressively with each attempt (100% → 65% → 35%)
+    const scale = Math.max(0.35, 1 - noAttempts * 0.35);
+    noButton.style.transform = 'scale(' + scale + ')';
+
+    // Get positions, avoiding overlap with the Yes button
+    const containerRect = proposalActions.getBoundingClientRect();
+    const yesRect = yesButton.getBoundingClientRect();
+    const btnW = noButton.offsetWidth * scale;
+    const btnH = noButton.offsetHeight * scale;
+    const maxX = Math.max(0, containerRect.width - btnW);
+    const maxY = Math.max(0, containerRect.height - btnH);
+
+    let newX, newY, attempts = 0;
+    do {
+      newX = Math.random() * maxX;
+      newY = Math.random() * maxY;
+      attempts++;
+      // Convert to page-relative coords to check overlap with Yes
+      var absX = containerRect.left + newX;
+      var absY = containerRect.top + newY;
+    } while (
+      attempts < 30 &&
+      absX < yesRect.right + 10 &&
+      absX + btnW > yesRect.left - 10 &&
+      absY < yesRect.bottom + 10 &&
+      absY + btnH > yesRect.top - 10
+    );
 
     noButton.style.position = 'absolute';
-    noButton.style.transition = 'left 0.38s ease, top 0.38s ease';
-    noButton.style.left = Math.random() * maxX + 'px';
-    noButton.style.top  = Math.random() * maxY + 'px';
+    noButton.style.transition = 'left 0.38s ease, top 0.38s ease, transform 0.38s ease';
+    noButton.style.left = newX + 'px';
+    noButton.style.top  = newY + 'px';
   }
 
   noButton.addEventListener('click', handleNoAttempt);
