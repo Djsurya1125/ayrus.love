@@ -1,367 +1,482 @@
-/* =============================================================
-   script.js — Luxury Romantic Proposal
-   Vanilla JS · No frameworks · GitHub Pages ready
-============================================================= */
+/* =============================================
+   A Promise in Pink
+   All interactions in vanilla JavaScript
+============================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
+  /* -------------------------------------------------
+     Element references
+  ------------------------------------------------- */
+  const heroSection = document.getElementById('hero');
+  const heroOverlay = document.querySelector('.hero__overlay');
+  const typingElements = [...document.querySelectorAll('[data-typing]')];
+  const enterButton = document.getElementById('enter-heart');
+  const storySection = document.getElementById('story');
+  const giftsSection = document.getElementById('gifts');
+  const yesButton = document.getElementById('yes-btn');
+  const noButton = document.getElementById('no-btn');
+  const destinyNote = document.getElementById('destiny-note');
+  const proposalActions = document.getElementById('proposal-actions');
 
-  /* -------------------------------------------------------
-     DOM REFERENCES
-  ------------------------------------------------------- */
-  const particleCanvas = document.getElementById('particle-canvas');
-  const landing        = document.getElementById('landing');
-  const story          = document.getElementById('story');
-  const gifts          = document.getElementById('gifts');
-  const btnEnter       = document.getElementById('btn-enter');
-  const storyLines     = document.querySelectorAll('.story__line');
-  const bigQuestion    = document.getElementById('big-question');
-  const proposalBtns   = document.getElementById('proposal-buttons');
-  const btnYes         = document.getElementById('btn-yes');
-  const btnNo          = document.getElementById('btn-no');
-  const noExpired      = document.getElementById('no-expired');
   const successOverlay = document.getElementById('success-overlay');
+  const toGiftsButton = document.getElementById('to-gifts');
   const confettiCanvas = document.getElementById('confetti-canvas');
-  const btnGifts       = document.getElementById('btn-gifts');
-  const lightbox       = document.getElementById('lightbox');
-  const lightboxImg    = lightbox.querySelector('.lightbox__img');
-  const lightboxClose  = lightbox.querySelector('.lightbox__close');
-  const btnMusic       = document.getElementById('btn-music');
-  const bgMusic        = document.getElementById('bg-music');
-  const musicIcon      = document.getElementById('music-icon');
 
-  /* ==========================================================
-     1. GOLD FLOATING PARTICLES
-  ========================================================== */
-  const pCtx = particleCanvas.getContext('2d');
-  let particles = [];
-  const P_COUNT = 40;
+  const heartField = document.getElementById('heart-field');
 
-  function resizeParticleCanvas() {
-    particleCanvas.width  = window.innerWidth;
-    particleCanvas.height = window.innerHeight;
+  const modalTriggers = document.querySelectorAll('[data-modal]');
+  const closeModalTargets = document.querySelectorAll('[data-close-modal]');
+  const modals = document.querySelectorAll('.modal');
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  const lightboxCloseButton = document.querySelector('.lightbox__close');
+  const carouselTrack = document.getElementById('carousel-track');
+  const carouselSlides = document.querySelectorAll('.carousel__slide');
+  const carouselDots = document.querySelectorAll('.carousel__dot');
+  const carouselPrev = document.getElementById('carousel-prev');
+  const carouselNext = document.getElementById('carousel-next');
+
+  const ambientToggle = document.getElementById('ambient-toggle');
+  const ambientMusic = document.getElementById('ambient-music');
+
+  const memoriesModal = document.getElementById('memories-modal');
+
+  /* -------------------------------------------------
+     Opening typing animation for hero text
+  ------------------------------------------------- */
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function typeText(element) {
+    return new Promise((resolve) => {
+      if (!element) {
+        resolve();
+        return;
+      }
+
+      const fullText = element.dataset.fullText || element.textContent.trim();
+      const speed = Number(element.dataset.typingSpeed) || 40;
+      const delay = Number(element.dataset.typingDelay) || 0;
+      element.dataset.fullText = fullText;
+
+      if (prefersReducedMotion) {
+        element.textContent = fullText;
+        element.classList.add('is-typed');
+        resolve();
+        return;
+      }
+
+      element.textContent = '';
+
+      setTimeout(() => {
+        let index = 0;
+        element.classList.add('is-typing');
+
+        const timer = setInterval(() => {
+          index += 1;
+          element.textContent = fullText.slice(0, index);
+
+          if (index >= fullText.length) {
+            clearInterval(timer);
+            element.classList.remove('is-typing');
+            element.classList.add('is-typed');
+            resolve();
+          }
+        }, speed);
+      }, delay);
+    });
   }
 
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < P_COUNT; i++) {
-      particles.push({
-        x: Math.random() * particleCanvas.width,
-        y: Math.random() * particleCanvas.height,
-        r: 0.6 + Math.random() * 1.4,
-        vy: -(0.15 + Math.random() * 0.3),
-        vx: (Math.random() - 0.5) * 0.2,
-        alpha: 0.15 + Math.random() * 0.35,
-        flicker: Math.random() * Math.PI * 2   // phase offset for soft flicker
-      });
+  async function runTypingSequence() {
+    for (const element of typingElements) {
+      await typeText(element);
     }
   }
 
-  let tick = 0;
-  function drawParticles() {
-    pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-    tick += 0.01;
+  runTypingSequence();
 
-    particles.forEach(p => {
-      p.y += p.vy;
-      p.x += p.vx;
+  /* -------------------------------------------------
+     Floating heart particles
+  ------------------------------------------------- */
+  function createHeartParticle() {
+    const heart = document.createElement('span');
+    heart.className = 'heart';
+    heart.textContent = '❤';
 
-      // Wrap around
-      if (p.y < -10) { p.y = particleCanvas.height + 10; p.x = Math.random() * particleCanvas.width; }
+    const size = 10 + Math.random() * 20;
+    const left = Math.random() * 100;
+    const duration = 8 + Math.random() * 8;
+    const delay = Math.random() * 4;
 
-      // Subtle twinkle
-      const flicker = 0.7 + 0.3 * Math.sin(tick * 2 + p.flicker);
+    heart.style.fontSize = `${size}px`;
+    heart.style.left = `${left}%`;
+    heart.style.bottom = '-8vh';
+    heart.style.animationDuration = `${duration}s`;
+    heart.style.animationDelay = `${delay}s`;
 
-      pCtx.beginPath();
-      pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      pCtx.fillStyle = `rgba(212, 175, 55, ${p.alpha * flicker})`;
-      pCtx.fill();
-    });
-
-    requestAnimationFrame(drawParticles);
-  }
-
-  resizeParticleCanvas();
-  initParticles();
-  drawParticles();
-  window.addEventListener('resize', () => { resizeParticleCanvas(); initParticles(); });
-
-  /* ==========================================================
-     2. SECTION TRANSITIONS
-  ========================================================== */
-  function transitionSections(hideEl, showEl, cb) {
-    hideEl.style.transition = 'opacity 0.8s ease';
-    hideEl.style.opacity = '0';
+    heartField.appendChild(heart);
 
     setTimeout(() => {
-      hideEl.classList.add('hidden');
-      hideEl.style.opacity = '';
-      hideEl.style.transition = '';
-      showEl.classList.remove('hidden');
-      showEl.style.opacity = '0';
-      showEl.style.transition = 'opacity 0.8s ease';
-
-      // Force reflow
-      void showEl.offsetHeight;
-      showEl.style.opacity = '1';
-
-      if (cb) setTimeout(cb, 200);
-    }, 850);
+      heart.remove();
+    }, (duration + delay) * 1000);
   }
 
-  /* ==========================================================
-     3. LANDING → STORY
-  ========================================================== */
-  btnEnter.addEventListener('click', () => {
-    transitionSections(landing, story, beginStorySequence);
+  // Keep the quantity subtle for elegance and performance.
+  setInterval(createHeartParticle, 620);
+
+  /* -------------------------------------------------
+     Reveal animations on scroll
+  ------------------------------------------------- */
+  const revealElements = document.querySelectorAll('.reveal-on-scroll');
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.18 }
+  );
+
+  revealElements.forEach((element) => revealObserver.observe(element));
+
+  /* -------------------------------------------------
+     Hero parallax movement
+  ------------------------------------------------- */
+  window.addEventListener('scroll', () => {
+    if (!heroOverlay) return;
+    const offset = window.scrollY * 0.16;
+    heroSection.style.setProperty('--parallax-y', `${offset}px`);
   });
 
-  /* ==========================================================
-     4. STORY — LINE-BY-LINE REVEAL
-  ========================================================== */
-  function beginStorySequence() {
-    const baseDelay = 600;   // ms between lines
-    const lineDelay = 900;   // ms per line
-
-    storyLines.forEach((line, i) => {
-      setTimeout(() => {
-        line.classList.add('fade-visible');
-      }, baseDelay + i * lineDelay);
-    });
-
-    // After all lines, show the big question
-    const totalLineTime = baseDelay + storyLines.length * lineDelay + 600;
+  /* -------------------------------------------------
+     Enter transition: Hero -> Story
+  ------------------------------------------------- */
+  enterButton.addEventListener('click', () => {
+    heroSection.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
+    heroSection.style.opacity = '0';
+    heroSection.style.transform = 'scale(1.02)';
 
     setTimeout(() => {
-      bigQuestion.classList.remove('hidden');
-      // Trigger reflow then animate
-      void bigQuestion.offsetHeight;
-      bigQuestion.classList.add('fade-visible');
-    }, totalLineTime);
+      heroSection.classList.add('hidden');
+      storySection.classList.remove('hidden');
 
-    setTimeout(() => {
-      proposalBtns.classList.remove('hidden');
-      void proposalBtns.offsetHeight;
-      proposalBtns.classList.add('fade-visible');
-    }, totalLineTime + 700);
+      // Ensure smooth movement to story section.
+      storySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Trigger visibility if user already at top with reduced movement.
+      storySection.querySelectorAll('.reveal-on-scroll').forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.9) {
+          element.classList.add('is-visible');
+        }
+      });
+    }, 820);
+  });
+
+  /* -------------------------------------------------
+     No button dodge logic (3 attempts)
+  ------------------------------------------------- */
+  let noAttempts = 0;
+
+  function getSafeNoButtonPosition() {
+    const containerRect = proposalActions.getBoundingClientRect();
+    const buttonWidth = noButton.offsetWidth;
+    const buttonHeight = noButton.offsetHeight;
+
+    const maxX = Math.max(0, containerRect.width - buttonWidth);
+    const maxY = Math.max(0, containerRect.height - buttonHeight);
+
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+
+    return {
+      x: randomX,
+      y: randomY
+    };
   }
 
-  /* ==========================================================
-     5. "NO" BUTTON — ELEGANT DODGE
-  ========================================================== */
-  let noAttempts = 0;
-  const MAX_NO = 3;
+  function handleNoAttempt(event) {
+    event.preventDefault();
 
-  function handleNo(e) {
-    e.preventDefault();
-    noAttempts++;
+    noAttempts += 1;
 
-    if (noAttempts >= MAX_NO) {
-      btnNo.classList.add('hidden');
-      noExpired.classList.remove('hidden');
+    if (noAttempts >= 3) {
+      noButton.classList.add('hidden');
+      destinyNote.classList.remove('hidden');
       return;
     }
 
-    // Move to a random position on screen
-    btnNo.classList.add('dodging');
-    const maxX = window.innerWidth  - btnNo.offsetWidth  - 20;
-    const maxY = window.innerHeight - btnNo.offsetHeight - 20;
-    btnNo.style.left = Math.max(20, Math.random() * maxX) + 'px';
-    btnNo.style.top  = Math.max(20, Math.random() * maxY) + 'px';
+    // Move the button gently within proposal container bounds.
+    noButton.style.position = 'absolute';
+    const nextPosition = getSafeNoButtonPosition();
+    noButton.style.left = `${nextPosition.x}px`;
+    noButton.style.top = `${nextPosition.y}px`;
+    noButton.style.transition = 'left 0.38s ease, top 0.38s ease';
   }
 
-  btnNo.addEventListener('click', handleNo);
-  btnNo.addEventListener('touchstart', handleNo, { passive: false });
+  noButton.addEventListener('click', handleNoAttempt);
+  noButton.addEventListener('touchstart', handleNoAttempt, { passive: false });
 
-  /* ==========================================================
-     6. "YES" — SUCCESS OVERLAY + CONFETTI
-  ========================================================== */
-  btnYes.addEventListener('click', () => {
+  /* -------------------------------------------------
+     Yes button: success overlay + confetti
+  ------------------------------------------------- */
+  yesButton.addEventListener('click', () => {
     successOverlay.classList.remove('hidden');
-    launchConfetti();
+    launchConfettiBurst();
   });
 
-  btnGifts.addEventListener('click', () => {
+  toGiftsButton.addEventListener('click', () => {
     successOverlay.classList.add('hidden');
-    transitionSections(story, gifts, activateRevealObserver);
+    giftsSection.classList.remove('hidden');
+    giftsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    giftsSection.querySelectorAll('.reveal-on-scroll').forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.95) {
+        element.classList.add('is-visible');
+      }
+    });
   });
 
-  /* ==========================================================
-     7. CONFETTI — Refined gold particles
-  ========================================================== */
-  function launchConfetti() {
-    const ctx = confettiCanvas.getContext('2d');
-    confettiCanvas.width  = window.innerWidth;
+  function launchConfettiBurst() {
+    const context = confettiCanvas.getContext('2d');
+    const confettiPieces = [];
+    const colors = ['#F8C8DC', '#D4AF37', '#ffe8a6', '#f4afc9'];
+    const totalPieces = 180;
+
+    confettiCanvas.width = window.innerWidth;
     confettiCanvas.height = window.innerHeight;
 
-    const pieces = [];
-    const COLORS = [
-      '#d4af37',   // gold
-      '#e8cc6e',   // light gold
-      '#f5e6b8',   // pale gold
-      '#c9a84c',   // deep gold
-      '#ffffff',   // white accent
-      '#b89b3b'    // antique gold
-    ];
-    const COUNT = 100;
-
-    for (let i = 0; i < COUNT; i++) {
-      pieces.push({
-        x: confettiCanvas.width / 2 + (Math.random() - 0.5) * 200,
-        y: confettiCanvas.height * 0.5,
-        w: 3 + Math.random() * 5,
-        h: 8 + Math.random() * 8,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        vy: -(4 + Math.random() * 8),
-        vx: (Math.random() - 0.5) * 6,
+    for (let i = 0; i < totalPieces; i += 1) {
+      confettiPieces.push({
+        x: window.innerWidth / 2,
+        y: window.innerHeight * 0.42,
+        size: 4 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        velocityX: (Math.random() - 0.5) * 9,
+        velocityY: -Math.random() * 10 - 3,
+        gravity: 0.18 + Math.random() * 0.05,
         rotation: Math.random() * 360,
-        rv: (Math.random() - 0.5) * 6,
-        gravity: 0.12 + Math.random() * 0.06,
-        alpha: 1,
-        decay: 0.003 + Math.random() * 0.003
+        rotationSpeed: (Math.random() - 0.5) * 10,
+        opacity: 1
       });
     }
 
     let frame = 0;
-    const MAX_FRAMES = 260;
+    const maxFrames = 220;
 
-    function draw() {
-      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-      frame++;
-      let alive = false;
+    function renderConfetti() {
+      context.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      frame += 1;
 
-      pieces.forEach(p => {
-        if (p.alpha <= 0) return;
-        alive = true;
+      confettiPieces.forEach((piece) => {
+        piece.velocityY += piece.gravity;
+        piece.x += piece.velocityX;
+        piece.y += piece.velocityY;
+        piece.rotation += piece.rotationSpeed;
+        piece.opacity -= 0.004;
 
-        p.vy += p.gravity;
-        p.x  += p.vx;
-        p.y  += p.vy;
-        p.vx *= 0.99;
-        p.rotation += p.rv;
-
-        // Start fading after midpoint
-        if (frame > MAX_FRAMES * 0.5) {
-          p.alpha = Math.max(0, p.alpha - p.decay * 2);
-        }
-
-        ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        ctx.restore();
+        context.save();
+        context.globalAlpha = Math.max(piece.opacity, 0);
+        context.translate(piece.x, piece.y);
+        context.rotate((piece.rotation * Math.PI) / 180);
+        context.fillStyle = piece.color;
+        context.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size * 1.35);
+        context.restore();
       });
 
-      if (alive && frame < MAX_FRAMES) {
-        requestAnimationFrame(draw);
+      if (frame < maxFrames) {
+        requestAnimationFrame(renderConfetti);
       } else {
-        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        context.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
       }
     }
 
-    draw();
+    renderConfetti();
   }
 
-  /* ==========================================================
-     8. INTERSECTION OBSERVER — Fade-in on scroll
-  ========================================================== */
-  function activateRevealObserver() {
-    const els = document.querySelectorAll('#gifts .reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-          observer.unobserve(entry.target);
+  /* -------------------------------------------------
+     Modals
+  ------------------------------------------------- */
+  function openModal(modalId) {
+    const targetModal = document.getElementById(modalId);
+    if (!targetModal) return;
+
+    targetModal.classList.remove('hidden');
+    targetModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(modalElement) {
+    if (!modalElement) return;
+
+    modalElement.classList.add('hidden');
+    modalElement.setAttribute('aria-hidden', 'true');
+
+    if (modalElement.id === 'memories-modal') {
+      stopCarouselAutoPlay();
+    }
+
+    if ([...modals].every((modal) => modal.classList.contains('hidden'))) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  modalTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      openModal(trigger.dataset.modal);
+
+      if (trigger.dataset.modal === 'memories-modal') {
+        startCarouselAutoPlay();
+      }
+    });
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openModal(trigger.dataset.modal);
+
+        if (trigger.dataset.modal === 'memories-modal') {
+          startCarouselAutoPlay();
         }
-      });
-    }, { threshold: 0.12 });
-
-    els.forEach((el, i) => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = `opacity 0.8s ease ${i * 0.15}s, transform 0.8s ease ${i * 0.15}s`;
-      observer.observe(el);
-    });
-  }
-
-  /* ==========================================================
-     9. GIFT CARDS → OPEN MODALS
-  ========================================================== */
-  document.querySelectorAll('.gift-card[data-modal]').forEach(card => {
-    card.addEventListener('click', () => {
-      const id = card.getAttribute('data-modal');
-      const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
       }
     });
   });
 
-  /* Close modals */
-  function closeModal(modal) {
-    modal.classList.add('hidden');
-    document.body.style.overflow = '';
+  closeModalTargets.forEach((closer) => {
+    closer.addEventListener('click', () => closeModal(closer.closest('.modal')));
+  });
 
-    // Pause any YouTube iframes inside this modal to stop playback
-    modal.querySelectorAll('iframe').forEach(iframe => {
-      const src = iframe.src;
-      iframe.src = '';        // clear to stop video
-      iframe.src = src;       // re-assign for next open
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      modals.forEach((modal) => closeModal(modal));
+      closeLightbox();
+    }
+  });
+
+  /* -------------------------------------------------
+     Memories lightbox
+  ------------------------------------------------- */
+  function openLightbox(source, altText) {
+    lightboxImage.src = source;
+    lightboxImage.alt = altText;
+    lightbox.classList.remove('hidden');
+    lightbox.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add('hidden');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lightboxImage.src = '';
+  }
+
+  document.querySelectorAll('.carousel__img').forEach((image) => {
+    image.addEventListener('click', () => openLightbox(image.src, image.alt));
+  });
+
+  lightboxCloseButton.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (event) => {
+    if (event.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  /* -------------------------------------------------
+     Memories carousel (8 images + auto change)
+  ------------------------------------------------- */
+  let currentSlide = 0;
+  let carouselTimer = null;
+
+  function updateCarousel() {
+    if (!carouselTrack || carouselSlides.length === 0) return;
+
+    carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    carouselSlides.forEach((slide, index) => {
+      slide.classList.toggle('is-active', index === currentSlide);
+    });
+
+    carouselDots.forEach((dot, index) => {
+      dot.classList.toggle('is-active', index === currentSlide);
     });
   }
 
-  document.querySelectorAll('.modal__close').forEach(btn => {
-    btn.addEventListener('click', () => closeModal(btn.closest('.modal')));
-  });
+  function goToSlide(index) {
+    if (carouselSlides.length === 0) return;
+    const total = carouselSlides.length;
+    currentSlide = (index + total) % total;
+    updateCarousel();
+  }
 
-  document.querySelectorAll('.modal__backdrop').forEach(bd => {
-    bd.addEventListener('click', () => closeModal(bd.closest('.modal')));
-  });
+  function nextSlide() {
+    goToSlide(currentSlide + 1);
+  }
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal:not(.hidden)').forEach(m => closeModal(m));
-      if (!lightbox.classList.contains('hidden')) lightbox.classList.add('hidden');
+  function prevSlide() {
+    goToSlide(currentSlide - 1);
+  }
+
+  function startCarouselAutoPlay() {
+    if (carouselSlides.length === 0) return;
+    stopCarouselAutoPlay();
+    carouselTimer = setInterval(nextSlide, 2600);
+  }
+
+  function stopCarouselAutoPlay() {
+    if (carouselTimer) {
+      clearInterval(carouselTimer);
+      carouselTimer = null;
     }
-  });
+  }
 
-  /* ==========================================================
-     10. LIGHTBOX — Gallery image viewer
-  ========================================================== */
-  document.querySelectorAll('.gallery__img').forEach(img => {
-    img.addEventListener('click', () => {
-      lightboxImg.src = img.src;
-      lightboxImg.alt = img.alt;
-      lightbox.classList.remove('hidden');
+  if (carouselPrev && carouselNext) {
+    carouselPrev.addEventListener('click', () => {
+      prevSlide();
+      startCarouselAutoPlay();
+    });
+
+    carouselNext.addEventListener('click', () => {
+      nextSlide();
+      startCarouselAutoPlay();
+    });
+  }
+
+  carouselDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      goToSlide(index);
+      startCarouselAutoPlay();
     });
   });
 
-  lightboxClose.addEventListener('click', () => lightbox.classList.add('hidden'));
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) lightbox.classList.add('hidden');
-  });
+  if (memoriesModal) {
+    memoriesModal.addEventListener('mouseenter', stopCarouselAutoPlay);
+    memoriesModal.addEventListener('mouseleave', startCarouselAutoPlay);
+  }
 
-  /* ==========================================================
-     11. AMBIENT MUSIC TOGGLE
-  ========================================================== */
-  let musicPlaying = false;
+  updateCarousel();
 
-  btnMusic.addEventListener('click', () => {
-    if (musicPlaying) {
-      bgMusic.pause();
-      musicIcon.textContent = '♪';
-      btnMusic.classList.remove('playing');
-    } else {
-      bgMusic.play().catch(() => {
-        /* Autoplay policy — user will try again */
+  /* -------------------------------------------------
+     Ambient background music toggle
+  ------------------------------------------------- */
+  let isAmbientPlaying = false;
+
+  ambientToggle.addEventListener('click', () => {
+    if (!isAmbientPlaying) {
+      ambientMusic.muted = false;
+      ambientMusic.play().catch(() => {
+        // Browser may require another user gesture.
       });
-      musicIcon.textContent = '♫';
-      btnMusic.classList.add('playing');
+      ambientToggle.classList.add('is-playing');
+      ambientToggle.textContent = '♬';
+    } else {
+      ambientMusic.pause();
+      ambientMusic.muted = true;
+      ambientToggle.classList.remove('is-playing');
+      ambientToggle.textContent = '♫';
     }
-    musicPlaying = !musicPlaying;
-  });
 
+    isAmbientPlaying = !isAmbientPlaying;
+  });
 });
