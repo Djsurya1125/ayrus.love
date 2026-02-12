@@ -250,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ------------------------------------------------- */
   yesButton.addEventListener('click', () => {
     startAmbientMusic();
+    ambientToggle.classList.add('is-visible');
     successOverlay.classList.remove('hidden');
     launchConfettiBurst();
   });

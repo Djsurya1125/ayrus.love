@@ -751,7 +751,14 @@ audio {
   color: #6d465a;
   background: rgba(255, 251, 248, 0.8);
   box-shadow: 0 10px 28px rgba(123, 68, 94, 0.25);
-  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), opacity var(--transition);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ambient-toggle.is-visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .ambient-toggle:hover {
