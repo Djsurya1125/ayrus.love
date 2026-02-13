@@ -426,6 +426,38 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCarousel();
 
   /* -------------------------------------------------
+     Traveling hearts animation
+  ------------------------------------------------- */
+  function createTravelingHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '💕';
+    
+    // Random position on the page vertically
+    const yPos = Math.random() * 80 - 40;
+    const scale = 0.5 + Math.random() * 0.6;
+    const duration = 8 + Math.random() * 6;
+    const direction = Math.random() > 0.5 ? 'left' : 'right';
+    const opStart = 0.4 + Math.random() * 0.4;
+    
+    heart.style.cssText = `
+      --y-pos: ${yPos}vh;
+      --scale: ${scale};
+      --op-start: ${opStart};
+      animation: travel${direction === 'left' ? 'HeartLeft' : 'HeartRight'} ${duration}s linear forwards;
+      font-size: ${10 + scale * 10}px;
+    `;
+    
+    heartField.appendChild(heart);
+    
+    // Remove heart after animation completes
+    setTimeout(() => heart.remove(), duration * 1000);
+  }
+  
+  // Spawn traveling hearts periodically
+  setInterval(createTravelingHeart, 1200);
+
+  /* -------------------------------------------------
      Ambient music toggle button
   ------------------------------------------------- */
   ambientToggle.addEventListener('click', () => {

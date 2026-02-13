@@ -116,6 +116,40 @@ audio {
   }
 }
 
+@keyframes travelHeartLeft {
+  0% {
+    transform: translateX(-100vw) translateY(var(--y-pos, 0)) scale(var(--scale, 0.6));
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--op-start, 0.6);
+  }
+  95% {
+    opacity: var(--op-start, 0.6);
+  }
+  100% {
+    transform: translateX(100vw) translateY(var(--y-pos, 0)) scale(var(--scale, 0.6));
+    opacity: 0;
+  }
+}
+
+@keyframes travelHeartRight {
+  0% {
+    transform: translateX(100vw) translateY(var(--y-pos, 0)) scale(var(--scale, 0.6));
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--op-start, 0.6);
+  }
+  95% {
+    opacity: var(--op-start, 0.6);
+  }
+  100% {
+    transform: translateX(-100vw) translateY(var(--y-pos, 0)) scale(var(--scale, 0.6));
+    opacity: 0;
+  }
+}
+
 .section {
   width: 100%;
   min-height: 100vh;
@@ -653,13 +687,19 @@ audio {
 
 .carousel__slide {
   min-width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .carousel__img {
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  aspect-ratio: var(--aspect-ratio, 4 / 3);
+  object-fit: contain;
+  object-position: center;
   cursor: zoom-in;
   box-shadow: 0 8px 22px rgba(150, 83, 111, 0.2);
+  background: rgba(0, 0, 0, 0.05);
+  width: 100%;
+  height: auto;
 }
 
 .carousel__caption {
