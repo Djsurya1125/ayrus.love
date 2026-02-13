@@ -662,6 +662,18 @@ audio {
   box-shadow: 0 8px 22px rgba(150, 83, 111, 0.2);
 }
 
+.carousel__caption {
+  padding: 0.8rem 1rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6d465a;
+  background: linear-gradient(135deg, rgba(248, 200, 220, 0.4), rgba(212, 175, 55, 0.2));
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  line-height: 1.4;
+}
+
 .carousel__control {
   width: 2rem;
   height: 2rem;
